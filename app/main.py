@@ -2,6 +2,7 @@ import os
 import uuid
 import traceback
 import logging
+import re
 from typing import Dict, Any
 
 from fastapi import FastAPI, UploadFile, File, HTTPException, Query
@@ -22,7 +23,7 @@ logging.basicConfig(
     format="%(asctime)s %(levelname)s %(name)s: %(message)s"
 )
 
-app = FastAPI(title="EventsDC Document POC", version="0.3.0")
+app = FastAPI(title="EventsDC Document POC", version="0.4.0")
 
 # ---------- CORS ----------
 app.add_middleware(
@@ -117,9 +118,9 @@ def search_hybrid(q: str = Query(..., min_length=1), k: int = 5) -> Dict[str, An
 def chat(q: str = Query(..., min_length=1), k: int = 5) -> Dict[str, Any]:
     """
     Lightweight chat:
-    - Runs hybrid search
-    - Composes an answer from top excerpts
-    - Returns citations (filename, doc_id, chunk_index, source_path)
+    - Hybrid search
+    - Summarize top excerpts into 2–4 concise sentences
+    - Return citations for traceability
     """
     hits = hybrid_search(q, k=k)
     if not hits:
@@ -129,17 +130,34 @@ def chat(q: str = Query(..., min_length=1), k: int = 5) -> Dict[str, Any]:
             "citations": []
         }
 
-    snippets = [h["excerpt"] for h in hits if h.get("excerpt")]
-    composed = " ".join(s[:500] for s in snippets)[:1200]
-    answer = composed if len(composed.strip()) >= 50 else \
-        "I found related passages but not enough detail to answer confidently."
+    # Gather candidate sentences from top excerpts
+    raw = " ".join([h.get("excerpt") or "" for h in hits])
+    parts = [s.strip() for s in re.split(r'(?<=[.!?])\s+', raw) if len(s.strip()) > 0]
+
+    # Deduplicate while keeping order
+    seen = set()
+    unique = []
+    for s in parts:
+        key = s.lower()
+        if key not in seen:
+            seen.add(key)
+            unique.append(s)
+
+    # Keep the most informative first 2–4 sentences (short and readable)
+    summary = " ".join(unique[:4])
+    if len(summary) < 80 and len(unique) >= 5:
+        summary = " ".join(unique[:5])
+    if len(summary) < 40:
+        summary = unique[0] if unique else "I found related passages but not enough detail to answer confidently."
+
     citations = [{
         "filename": h["filename"],
         "doc_id": h["doc_id"],
         "chunk_index": h["chunk_index"],
         "source_path": h["source_path"]
     } for h in hits]
-    return {"query": q, "answer": answer, "citations": citations}
+
+    return {"query": q, "answer": summary, "citations": citations}
 
 @app.get("/health")
 def health() -> Dict[str, Any]:
@@ -158,3 +176,19 @@ def stats() -> Dict[str, Any]:
     except Exception as e:
         logging.exception("Stats failed")
         return {"collection": "docs", "total_chunks": 0, "error": str(e)}
+
+@app.post("/admin/reset")
+def admin_reset():
+    """
+    Delete the local Chroma index and recreate the directory for a clean demo.
+    You will need to re-ingest documents after this.
+    """
+    import shutil
+    from .utils import CHROMA_DB_DIR
+    try:
+        shutil.rmtree(CHROMA_DB_DIR, ignore_errors=True)
+        os.makedirs(CHROMA_DB_DIR, exist_ok=True)
+        return {"message": "index reset"}
+    except Exception as e:
+        logging.exception("Admin reset failed")
+        raise HTTPException(status_code=500, detail=f"Reset failed: {e}")
