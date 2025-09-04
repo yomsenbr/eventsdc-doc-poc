@@ -38,7 +38,6 @@ class Settings(BaseSettings):
     
     # Database
     chroma_db_dir: str = "chroma_db"
-    embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2"
     
     # Text processing
     chunk_size: int = 1000

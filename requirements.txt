@@ -9,7 +9,7 @@ pydantic-settings==2.1.0
 # Security & Authentication
 passlib[bcrypt]==1.7.4
 python-jose[cryptography]==3.3.0
-PyJWT==2.8.0
+PyJWT==2.10.1
 
 # Database & Vector Search
 chromadb==1.0.20

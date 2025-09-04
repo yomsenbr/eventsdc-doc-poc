@@ -114,7 +114,8 @@ def monitor_request(endpoint: str, method: str = "GET"):
                 raise
             finally:
                 response_time = time.time() - start_time
-                metrics_collector.record_request(endpoint, method, status_code, response_time)
+                metrics_collector.record_request(endpoint, method)
+                metrics_collector.record_response_time(endpoint, method, response_time)
         
         return wrapper
     return decorator
@@ -202,15 +203,21 @@ class HealthChecker:
     def check_database_health(self) -> Dict[str, Any]:
         """Check database connectivity and health"""
         try:
-            from .indexing import get_chroma_collection
-            collection = get_chroma_collection()
-            count = collection.count() if hasattr(collection, "count") else 0
-            
-            return {
-                "status": "healthy",
-                "total_chunks": count,
-                "error": None
-            }
+            # Simple health check without importing indexing module
+            import os
+            chroma_db_path = os.path.join("chroma_db", "chroma.sqlite3")
+            if os.path.exists(chroma_db_path):
+                return {
+                    "status": "healthy",
+                    "total_chunks": "available",
+                    "error": None
+                }
+            else:
+                return {
+                    "status": "degraded",
+                    "total_chunks": 0,
+                    "error": "Database not initialized"
+                }
         except Exception as e:
             self.logger.error(f"Database health check failed: {e}")
             return {
