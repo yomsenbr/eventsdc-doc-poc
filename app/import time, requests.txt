@@ -1,0 +1,7 @@
+import time, requests
+BASE="http://127.0.0.1:8000"
+def hit(p,params): 
+    t=time.perf_counter(); r=requests.get(BASE+p,params=params,timeout=60)
+    print(p, r.status_code, f"{(time.perf_counter()-t)*1000:.0f} ms"); return r.json()
+hit("/search/hybrid", {"q":"invoice policy","k":5})
+hit("/chat", {"q":"what is our refund policy?","k":5})
