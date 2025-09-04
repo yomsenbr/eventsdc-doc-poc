@@ -102,12 +102,12 @@ def monitor_request(endpoint: str, method: str = "GET"):
     """Decorator to monitor API requests"""
     def decorator(func):
         @wraps(func)
-        async def wrapper(*args, **kwargs):
+        def wrapper(*args, **kwargs):
             start_time = time.time()
             status_code = 200
             
             try:
-                result = await func(*args, **kwargs)
+                result = func(*args, **kwargs)
                 return result
             except Exception as e:
                 status_code = 500
