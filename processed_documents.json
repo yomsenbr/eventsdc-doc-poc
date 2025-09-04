@@ -1,0 +1,18 @@
+{
+  "e1ab1c11df53338f023675949f046fe29b29824f9c643a97c4ea28887a8b6ab7": {
+    "filename": "test_document_1757008015.txt",
+    "file_hash": "e1ab1c11df53338f023675949f046fe29b29824f9c643a97c4ea28887a8b6ab7",
+    "content_hash": "ef121b92111afc91a8fd4c9a7705cd48c2ec89c333c5b69f78284392525faa28",
+    "upload_date": "2025-09-04T17:46:55.790886",
+    "file_size": 423,
+    "doc_type": "txt"
+  },
+  "8f990ba0b577b51cf009ea049368c16bbda1b21e1b93be07a824758bb253c39b": {
+    "filename": "large_test.txt",
+    "file_hash": "8f990ba0b577b51cf009ea049368c16bbda1b21e1b93be07a824758bb253c39b",
+    "content_hash": "8f990ba0b577b51cf009ea049368c16bbda1b21e1b93be07a824758bb253c39b",
+    "upload_date": "2025-09-04T17:46:56.710658",
+    "file_size": 1048576,
+    "doc_type": "txt"
+  }
+}
