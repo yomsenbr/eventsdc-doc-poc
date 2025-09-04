@@ -116,7 +116,27 @@ def monitor_request(endpoint: str, method: str = "GET"):
                 response_time = time.time() - start_time
                 metrics_collector.record_request(endpoint, method, status_code, response_time)
         
-        return wrapper
+        @wraps(func)
+        async def async_wrapper(*args, **kwargs):
+            start_time = time.time()
+            status_code = 200
+            
+            try:
+                result = await func(*args, **kwargs)
+                return result
+            except Exception as e:
+                status_code = 500
+                raise
+            finally:
+                response_time = time.time() - start_time
+                metrics_collector.record_request(endpoint, method, status_code, response_time)
+        
+        # Return the appropriate wrapper based on whether the function is async
+        import asyncio
+        if asyncio.iscoroutinefunction(func):
+            return async_wrapper
+        else:
+            return wrapper
     return decorator
 
 class SecurityMonitor:
