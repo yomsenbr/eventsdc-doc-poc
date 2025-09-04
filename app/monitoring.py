@@ -114,8 +114,7 @@ def monitor_request(endpoint: str, method: str = "GET"):
                 raise
             finally:
                 response_time = time.time() - start_time
-                metrics_collector.record_request(endpoint, method)
-                metrics_collector.record_response_time(endpoint, method, response_time)
+                metrics_collector.record_request(endpoint, method, status_code, response_time)
         
         return wrapper
     return decorator
