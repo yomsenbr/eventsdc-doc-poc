@@ -1,10 +1,10 @@
 # EventsDC Document POC - Production Deployment Guide
 
-## 🚀 **Complete Server Deployment Instructions**
+##  **Complete Server Deployment Instructions**
 
 This guide will help you deploy the EventsDC Document POC to a production server with Docker Compose, NGINX, and TLS for your security team and other teams to test.
 
-## 📋 **Prerequisites**
+##  **Prerequisites**
 
 ### **Server Requirements**
 - **OS**: Ubuntu 20.04+ or CentOS 8+ (recommended)
@@ -59,7 +59,7 @@ sudo apt install -y git nginx certbot python3-certbot-nginx
 sudo yum install -y git nginx certbot python3-certbot-nginx
 ```
 
-## 📦 **Step 2: Deploy the Application**
+##  **Step 2: Deploy the Application**
 
 ### **2.1 Clone Repository**
 ```bash
@@ -683,4 +683,4 @@ Your EventsDC Document POC is now deployed and ready for testing by your securit
 
 ---
 
-**🔒 Security Note**: This is a production-ready system with comprehensive security measures. All teams can now test the system safely and provide feedback for improvements.
+
