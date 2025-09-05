@@ -5,7 +5,7 @@ A proof-of-concept app that ingests documents (PDF, DOCX, PPTX, TXT), extracts t
 indexes the content (chunks + embeddings in ChromaDB), and enables **keyword**, **vector**, and **hybrid** search,
 plus a lightweight **chat** endpoint with citations.
 
-## ✨ Features
+##  Features
 - Upload & ingest: PDF, DOCX, PPTX, TXT (OCR for scanned PDFs with Tesseract + Poppler)
 - Metadata capture: filename, type, upload date, doc_id, chunk_index, source path
 - Chunking and embeddings stored in **ChromaDB**
@@ -16,7 +16,7 @@ plus a lightweight **chat** endpoint with citations.
 
 ---
 
-## 🖥️ Prerequisites (Windows)
+## Prerequisites (Windows)
 - **Python 3.11+**
 - **Tesseract OCR** (on PATH): `tesseract --version`
 - **Poppler utils** (for better PDF parsing): `pdfinfo -v` (optional but recommended)
@@ -26,7 +26,7 @@ plus a lightweight **chat** endpoint with citations.
 
 ---
 
-## 🚀 Setup
+## Setup
 ```powershell
 # 1) clone or open your project folder
 cd C:\Users\yomse\eventsdc-doc-poc
@@ -46,7 +46,7 @@ Open Swagger: http://127.0.0.1:8000/docs
 
 ---
 
-## 📂 Project Structure
+##  Project Structure
 ```
 eventsdc-doc-poc/
 ├─ app/
@@ -69,7 +69,7 @@ eventsdc-doc-poc/
 
 ---
 
-## 🧪 How to Use (Swagger)
+##  How to Use (Swagger)
 1. **POST `/ingest`** → upload a file (PDF/DOCX/PPTX/TXT). Response shows `doc_id`, `chunks`, and `saved_path`.
 2. **GET `/search/keyword`** → exact-term search (BM25).
 3. **GET `/search/vector`** → semantic search (embeddings).
@@ -81,14 +81,14 @@ eventsdc-doc-poc/
 
 ---
 
-## 🧭 Architecture (High-level)
+##  Architecture (High-level)
 See **`docs/architecture_diagram.png`** (included).
 
 **Flow**: Upload → Extract (incl. OCR) → Chunk → Embeddings → Store (ChromaDB + metadata) → Search/Chat → Results + Citations.
 
 ---
 
-## 📤 GitHub (optional)
+##  GitHub 
 ```powershell
 git config --global user.name "Yomsen Tsegaye"
 git config --global user.email "Yomsen.tsegaye@eventsdc.com"
@@ -104,7 +104,7 @@ Use a **Personal Access Token** as password if prompted.
 
 ---
 
-## 🧰 Troubleshooting
+##  Troubleshooting
 - **`AttributeError: ptp removed`** → ensure `app/search.py` uses `np.ptp(...)` (not `arr.ptp()`).
 - **Scanned PDF not searchable** → confirm `tesseract --version` and re-open PowerShell.
 - **Empty results** → ingest at least one doc, then try **/search/hybrid**.
